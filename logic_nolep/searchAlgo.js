@@ -1,27 +1,45 @@
+// const searchRotatedArray = (nums, target) => { // linearSearch BAN
+//     //code
+//     for(let i = 0; i < nums.length; i++){
+//         if(nums[i] === target){
+//             return i
+//         }
+//     }
+
+//     return -1
+// };
+
+
 const searchRotatedArray = (nums, target) => {
-    let start = 0
-    let end = nums.length - 1
-    while(start <= end){
-        let middle = Math.floor((start+end)/2)
-        if(nums[middle] === target){
-            return middle
+    let left = 0;
+    let right = nums.length - 1;
+
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        
+        if(nums[mid] === target){ 
+            return mid;
         }
-        if(nums[start] <= nums[middle]){
-            if(nums[start]<=target&&target<nums[middle]){
-                end = middle-1
-            }else{
-                start = middle+1
+        
+        // handle target di kiri
+        if (nums[left] <= nums[mid]) {
+            if(nums[left] <= target && target < nums[mid]){
+                right = mid - 1;
+            } else {
+                left = mid + 1
             }
-        }else{
-            if(nums[middle]< target && target<=nums[end]){
-                start=middle+1
-            }else{
-                end = middle-1
+        } else { // bagian kanan
+            if(nums[mid] < target && target <= nums[right]){
+                left = mid + 1;
+            } else {
+                right = mid - 1
             }
         }
     }
-    return -1
+
+    return -1;
 };
+
 
 // Test Case
 console.log(searchRotatedArray([4, 5, 6, 7, 0, 1, 2], 0)); // Output: 4
