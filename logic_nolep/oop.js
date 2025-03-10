@@ -1,15 +1,15 @@
 class Bank {
-  constructor(bankName){
-    this.bankName = bankName
+  constructor(name){
+    this.name = name
+    this.accounts = []
   }
 
-  register(name, type, amount){
-    let accountNumber = Math.floor(Math.random() * 10000000000)
-    if(amount < 20000){
-      return `Saldo awal kurang dari minimum saldo yang ditentukan`
-    }else{
-      return `Selamat datang ke ${this.bankName}, ${name}. Nomor Akun anda adalah ${accountNumber}. Total saldo adalah ${amount}`
-    }
+  register(person, memberType, intialDeposit){
+   let newAccount
+
+   person.bankAccount = newAccount
+   this.accounts.push(newAccount)
+   return `Selamat datang ke ${this.name}, ${person.name}. Nomor Akun anda adalah ${accountNumber}. Total saldo adalah ${intialDeposit}`
   }
 }
 
@@ -20,7 +20,32 @@ class Person {
 }
 
 class Member {
-  // Tulis Code Disini
+  constructor(memberName, accountNumber, minimumBalance, balance){
+    this.memberName = memberName
+    this.accountNumber = accountNumber
+    this.minimumBalance = minimumBalance
+    this.balance = balance
+    this.transactions = []
+  }
+  credit(amount){
+    if(amount < 10000){
+      return `Belum memenuhi minimal uang yang dapat di setor`
+    }else{
+      return `Anda sukses menyimpan uang ke dalam bank.`
+    }
+  }
+  
+  debet(amount, note){
+    if(amount > 10000){
+      return `Anda sukses menarik uang dari bank`
+    }else{
+      return `Anda sukses menarik uang dari bank`
+    }
+  }
+
+  transfer(targetAccount, amount){
+    
+  }
 }
 
 class Platinum extends Member{
