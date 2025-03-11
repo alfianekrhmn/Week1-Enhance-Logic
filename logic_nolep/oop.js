@@ -1,64 +1,101 @@
 class Bank {
-  constructor(name){
-    this.name = name
-    this.accounts = []
+  constructor(name) {
+    this.name = name;
+    this.accounts = [];
   }
 
-  register(person, memberType, intialDeposit){
-   let newAccount
+  register(person, memberType, initialDeposit) {
+    let accountNumber = Math.floor(1000000 + Math.random() * 9000000);
+    let minimumBalance = memberType === 'platinum' ? 50000 : 10000;
 
-   person.bankAccount = newAccount
-   this.accounts.push(newAccount)
-   return `Selamat datang ke ${this.name}, ${person.name}. Nomor Akun anda adalah ${accountNumber}. Total saldo adalah ${intialDeposit}`
+    if (initialDeposit < minimumBalance) {
+      return 'Saldo awal kurang dari minimum saldo yang ditentukan';
+    }
+
+    let newAccount = memberType === 'platinum'
+      ? new Platinum(person.nameCustomer, accountNumber, initialDeposit)
+      : new Silver(person.nameCustomer, accountNumber, initialDeposit);
+
+    person.bankAccount = newAccount;
+    this.accounts.push(newAccount);
+
+    return `Selamat datang ke ${this.name}, ${person.nameCustomer}. Nomor Akun anda adalah ${accountNumber}. Total saldo adalah ${initialDeposit}`;
   }
 }
 
 class Person {
-  constructor(nameCustomer){
-    this.nameCustomer = nameCustomer
+  constructor(nameCustomer) {
+    this.nameCustomer = nameCustomer;
+    this.bankAccount = null;
   }
 }
 
 class Member {
-  constructor(memberName, accountNumber, minimumBalance, balance){
-    this.memberName = memberName
-    this.accountNumber = accountNumber
-    this.minimumBalance = minimumBalance
-    this.balance = balance
-    this.transactions = []
-  }
-  credit(amount){
-    if(amount < 10000){
-      return `Belum memenuhi minimal uang yang dapat di setor`
-    }else{
-      return `Anda sukses menyimpan uang ke dalam bank.`
-    }
-  }
-  
-  debet(amount, note){
-    if(amount > 10000){
-      return `Anda sukses menarik uang dari bank`
-    }else{
-      return `Anda sukses menarik uang dari bank`
-    }
+  constructor(memberName, accountNumber, balance) {
+    this.memberName = memberName;
+    this.accountNumber = accountNumber;
+    this.balance = balance;
+    this.transactions = [];
   }
 
-  transfer(targetAccount, amount){
-    
+  credit(amount) {
+    if (amount < 10000) {
+      return 'Belum memenuhi minimal uang yang dapat disetor';
+    }
+    this.balance += amount;
+    this.transactions.push(new Transaction(amount, 'credit', 'nyetor'));
+    return 'Anda sukses menyimpan uang ke dalam bank.';
+  }
+
+  debet(amount, note) {
+    if (this.balance - amount < this.minimumBalance) {
+      return 'Saldo minimum anda tidak terpenuhi untuk melakukan transaksi.';
+    }
+    if (amount > this.balance) {
+      return 'Saldo anda tidak cukup';
+    }
+    this.balance -= amount;
+    this.transactions.push(new Transaction(amount, 'debet', note));
+    return 'Anda sukses menarik uang dari bank';
+  }
+
+  transfer(targetAccount, amount) {
+    if (this.balance - amount < this.minimumBalance) {
+      return `Anda gagal transfer ke ${targetAccount.memberName}`;
+    }
+    this.balance -= amount;
+    this.transactions.push(new Transaction(amount, 'debet', `transfer ke akun ${targetAccount.memberName}`));
+    targetAccount.balance += amount;
+    targetAccount.transactions.push(new Transaction(amount, 'credit', `transfer dari akun ${this.memberName}`));
+    return `Anda sukses transfer ke ${targetAccount.memberName}`;
   }
 }
 
-class Platinum extends Member{
-  // Tulis Code Disini
+class Platinum extends Member {
+  constructor(memberName, accountNumber, balance) {
+    super(memberName, accountNumber, balance);
+    this.minimumBalance = 50000;
+    this.type = 'platinum';
+  }
 }
 
-class Silver extends Member{
-  // Tulis Code Disini
+class Silver extends Member {
+  constructor(memberName, accountNumber, balance) {
+    super(memberName, accountNumber, balance);
+    this.minimumBalance = 10000;
+    this.type = 'silver';
+  }
 }
 
 class Transaction {
-  // Tulis Code Disini
+  constructor(nominal, status, note) {
+    this.nominal = nominal;
+    this.status = status;
+    this.date = new Date();
+    this.note = note;
+  }
 }
+
 
 // TESTCASE
 // TIDAK BOLEH MENGUBAH CODE DI BAWAH INI
